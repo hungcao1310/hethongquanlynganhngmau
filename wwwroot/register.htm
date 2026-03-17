@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng Ký - Blood Bank Manager</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .register-container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            color: #667eea;
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .logo p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .role-selector {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+
+        .role-btn {
+            padding: 15px 30px;
+            border: 2px solid #e1e5e9;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s;
+            color: #666;
+        }
+
+        .role-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .role-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-row.single {
+            gap: 0;
+        }
+
+        .form-group {
+            flex: 1;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .register-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            margin-bottom: 20px;
+        }
+
+        .register-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .register-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .links {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .links a {
+            color: #667eea;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .links a:hover {
+            text-decoration: underline;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .patient-fields {
+            display: none;
+        }
+
+        .staff-fields {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="register-container">
+            <div class="logo">
+                <h1>🏥 Blood Bank Manager</h1>
+                <p>Đăng ký tài khoản mới</p>
+            </div>
+
+            <div class="role-selector">
+                <button class="role-btn active" data-role="staff">👨‍💼 Nhân Viên</button>
+                <button class="role-btn" data-role="patient">👨‍⚕️ Bệnh Nhân</button>
+            </div>
+
+            <!-- Staff Registration Form -->
+            <form id="staffForm" class="form-section active">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="staffEmail">Email:</label>
+                        <input type="email" id="staffEmail" name="email" required placeholder="nhanvien@benhvien.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="staffPassword">Mật khẩu:</label>
+                        <input type="password" id="staffPassword" name="password" required
+                            placeholder="Ít nhất 6 ký tự và 1 chữ số">
+                    </div>
+                </div>
+                <div class="form-row single">
+                    <div class="form-group">
+                        <label for="staffFullName">Họ và tên:</label>
+                        <input type="text" id="staffFullName" name="fullName" required placeholder="Nguyễn Văn A">
+                    </div>
+                </div>
+                <button type="submit" class="register-btn" id="staffBtn">
+                    <span id="staffBtnText">Đăng Ký Nhân Viên</span>
+                </button>
+            </form>
+
+            <!-- Patient Registration Form -->
+            <form id="patientForm" class="form-section">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="patientEmail">Email:</label>
+                        <input type="email" id="patientEmail" name="email" required placeholder="benhnhan@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="patientPassword">Mật khẩu:</label>
+                        <input type="password" id="patientPassword" name="password" required
+                            placeholder="Ít nhất 6 ký tự và 1 chữ số">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="patientFullName">Họ và tên:</label>
+                        <input type="text" id="patientFullName" name="fullName" required placeholder="Trần Thị B">
+                    </div>
+                    <div class="form-group">
+                        <label for="patientCode">Mã bệnh nhân:</label>
+                        <input type="text" id="patientCode" name="patientCode" placeholder="BN001">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bloodType">Nhóm máu:</label>
+                        <select id="bloodType" name="bloodTypeId" required>
+                            <option value="">Chọn nhóm máu</option>
+                            <option value="1">O âm (O-)</option>
+                            <option value="2">O dương (O+)</option>
+                            <option value="3">A âm (A-)</option>
+                            <option value="4">A dương (A+)</option>
+                            <option value="5">B âm (B-)</option>
+                            <option value="6">B dương (B+)</option>
+                            <option value="7">AB âm (AB-)</option>
+                            <option value="8">AB dương (AB+)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="dateOfBirth">Ngày sinh:</label>
+                        <input type="date" id="dateOfBirth" name="dateOfBirth" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="gender">Giới tính:</label>
+                        <select id="gender" name="gender">
+                            <option value="">Chọn giới tính</option>
+                            <option value="Nam">Nam</option>
+                            <option value="Nữ">Nữ</option>
+                            <option value="Khác">Khác</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="phoneNumber">Số điện thoại:</label>
+                        <input type="tel" id="phoneNumber" name="phoneNumber" placeholder="0123456789">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="hospital">Bệnh viện:</label>
+                        <input type="text" id="hospital" name="hospital" placeholder="Bệnh viện Việt Đức">
+                    </div>
+                    <div class="form-group">
+                        <label for="ward">Khoa/Phòng:</label>
+                        <input type="text" id="ward" name="ward" placeholder="Khoa Nội">
+                    </div>
+                </div>
+                <div class="form-row single">
+                    <div class="form-group">
+                        <label for="admissionDate">Ngày nhập viện:</label>
+                        <input type="date" id="admissionDate" name="admissionDate" required>
+                    </div>
+                </div>
+                <div class="form-row single">
+                    <div class="form-group">
+                        <label for="medicalCondition">Tình trạng bệnh:</label>
+                        <input type="text" id="medicalCondition" name="medicalCondition"
+                            placeholder="Thiếu máu, chấn thương,...">
+                    </div>
+                </div>
+                <button type="submit" class="register-btn" id="patientBtn">
+                    <span id="patientBtnText">Đăng Ký Bệnh Nhân</span>
+                </button>
+            </form>
+
+            <div id="message" class="message"></div>
+        </div>
+
+        <div class="links">
+            <a href="login.htm">Đã có tài khoản? Đăng nhập</a>
+            <a href="index.htm">Quay lại trang chủ</a>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = (function () {
+            if (window.location.protocol.startsWith('http')) {
+                return `${window.location.protocol}//${window.location.host}/api`;
+            }
+            return 'http://localhost:5000/api';
+        })();
+
+        // If this page is opened directly from the file system (file://), the API calls will always fail.
+        // Display a friendly message and prevent the user from attempting to submit.
+        if (window.location.protocol === 'file:') {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = 'Vui lòng khởi chạy ứng dụng bằng cách chạy dotnet run và mở trang qua http://localhost:5000/register.htm (không mở trực tiếp từ file).';
+            messageDiv.className = 'message error';
+            messageDiv.style.display = 'block';
+
+            // Disable the forms
+            document.querySelectorAll('form').forEach(f => f.querySelectorAll('input, select, button').forEach(el => el.disabled = true));
+        }
+
+        // Role selector
+        document.querySelectorAll('.role-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                // Update active button
+                document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                // Show corresponding form
+                const role = this.dataset.role;
+                document.querySelectorAll('.form-section').forEach(form => form.classList.remove('active'));
+                document.getElementById(`${role}Form`).classList.add('active');
+            });
+        });
+
+        // Staff registration
+        document.getElementById('staffForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            await registerUser('staff');
+        });
+
+        // Patient registration
+        document.getElementById('patientForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+            await registerUser('patient');
+        });
+
+        async function registerUser(role) {
+            const form = document.getElementById(`${role}Form`);
+            const btn = document.getElementById(`${role}Btn`);
+            const btnText = document.getElementById(`${role}BtnText`);
+
+            // Show loading state
+            btn.disabled = true;
+            btnText.textContent = 'Đang đăng ký...';
+            const loading = document.createElement('div');
+            loading.className = 'loading';
+            btn.appendChild(loading);
+
+            try {
+                const formData = new FormData(form);
+                const data = Object.fromEntries(formData.entries());
+
+                // Convert date strings to ISO format
+                if (data.dateOfBirth) {
+                    data.dateOfBirth = new Date(data.dateOfBirth).toISOString();
+                }
+                if (data.admissionDate) {
+                    data.admissionDate = new Date(data.admissionDate).toISOString();
+                }
+
+                const endpoint = role === 'staff' ? 'register/staff' : 'register/patient';
+                const url = `${API_BASE}/account/${endpoint}`;
+                console.log('Register request to:', url);
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showMessage(`${role === 'staff' ? 'Nhân viên' : 'Bệnh nhân'} đăng ký thành công! Bạn có thể quay lại đăng nhập.`,'success');
+                    form.reset();
+                } else {
+                    // Some API error responses return an array of IdentityError objects
+                    if (Array.isArray(result)) {
+                        const messages = result
+                            .map(e => e.description || e.message || JSON.stringify(e))
+                            .filter(Boolean);
+                        showMessage(messages.join(' | ') || 'Đăng ký thất bại!', 'error');
+                    } else {
+                        showMessage(result.message || 'Đăng ký thất bại!', 'error');
+                    }
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                showMessage(`Lỗi kết nối. Vui lòng thử lại! (${error?.message || 'unknown'})`, 'error');
+            } finally {
+                // Reset button state
+                btn.disabled = false;
+                btnText.textContent = `Đăng Ký ${role === 'staff' ? 'Nhân Viên' : 'Bệnh Nhân'}`;
+                const loadingElement = btn.querySelector('.loading');
+                if (loadingElement) {
+                    btn.removeChild(loadingElement);
+                }
+            }
+        }
+
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type}`;
+            messageDiv.style.display = 'block';
+
+            // Auto hide after 5 seconds
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 5000);
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Portal - Blood Bank Manager</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Keyframe Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px rgba(102, 126, 234, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(102, 126, 234, 0.8), 0 0 30px rgba(102, 126, 234, 0.6); }
+            100% { box-shadow: 0 0 5px rgba(102, 126, 234, 0.5); }
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c);
+            background-size: 400% 400%;
+            min-height: 100vh;
+            padding: 20px;
+            animation: fadeIn 1s ease-out, gradientShift 15s ease infinite;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            text-align: center;
+            animation: slideInLeft 0.8s ease-out 0.2s both;
+        }
+
+        header h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            animation: fadeIn 1s ease-out 0.5s both;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            animation: slideInRight 0.8s ease-out 0.4s both;
+        }
+
+        .nav-btn {
+            padding: 12px 24px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .nav-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+            animation: bounce 0.6s ease-in-out;
+        }
+
+        .nav-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+            animation: glow 2s infinite;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+            animation: fadeIn 1s ease-out 0.6s both;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: slideInLeft 0.8s ease-out 0.8s both;
+        }
+
+        .card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+            animation: pulse 0.6s ease-in-out;
+        }
+
+        .card:nth-child(even) {
+            animation: slideInRight 0.8s ease-out 0.8s both;
+        }
+
+        .card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #764ba2;
+            margin: 15px 0;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .badge-success {
+            background: #d5f4e6;
+            color: #27ae60;
+        }
+
+        .badge-danger {
+            background: #fadbd8;
+            color: #e74c3c;
+        }
+
+        .badge-warning {
+            background: #fdeee8;
+            color: #e67e22;
+        }
+
+        .badge-info {
+            background: #d1ecf1;
+            color: #17a2b8;
+        }
+
+        .section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            display: none;
+            animation: fadeIn 0.8s ease-out both;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 22px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+            animation: slideInLeft 0.6s ease-out both;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            animation: fadeIn 1s ease-out 0.5s both;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            animation: slideInLeft 0.6s ease-out both;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.3s;
+        }
+
+        tr:hover {
+            background: #f5f5f5;
+            transform: scale(1.01);
+            transition: all 0.3s;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            animation: fadeIn 0.8s ease-out both;
+        }
+
+        .form-group:nth-child(odd) {
+            animation-delay: 0.1s;
+        }
+
+        .form-group:nth-child(even) {
+            animation-delay: 0.2s;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            font-size: 14px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(149, 165, 166, 0.3);
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #229954;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(39, 174, 96, 0.3);
+        }
+
+        .btn-info {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-info:hover {
+            background: #138496;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(23, 162, 184, 0.3);
+        }
+
+        .btn-warning {
+            background: #f39c12;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #e67e22;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(243, 156, 18, 0.3);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+            animation: slideInLeft 0.5s ease-out both;
+        }
+
+        .message.success {
+            background: #d5f4e6;
+            color: #27ae60;
+            border-left: 4px solid #27ae60;
+            display: block;
+        }
+
+        .message.error {
+            background: #fadbd8;
+            color: #e74c3c;
+            border-left: 4px solid #e74c3c;
+            display: block;
+        }
+
+        .message.info {
+            background: #d1ecf1;
+            color: #17a2b8;
+            border-left: 4px solid #17a2b8;
+            display: block;
+        }
+
+        .loading {
+            color: #667eea;
+            font-style: normal;
+            font-weight: bold;
+            font-size: 16px;
+            animation: pulse 1s infinite;
+        }
+
+        .no-data {
+            color: #999;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            animation: slideInLeft 0.3s ease-out;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #667eea;
+        }
+
+        .profile-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .info-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .info-item h4 {
+            color: #667eea;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .info-item p {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .appointment-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .appointment-card h4 {
+            margin-bottom: 10px;
+        }
+
+        .appointment-card p {
+            margin: 5px 0;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-tabs {
+                flex-direction: column;
+            }
+
+            .nav-btn {
+                width: 100%;
+                text-align: left;
+            }
+
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-info {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1>👨‍⚕️ Patient Portal - Blood Bank Manager</h1>
+                    <p>Quản lý thông tin y tế cá nhân - Dành cho bệnh nhân</p>
+                </div>
+                <div id="auth-section">
+                    <button id="login-btn" class="nav-btn" onclick="window.location.href='patient-login.htm'">
+                        🔐 Đăng Nhập
+                    </button>
+                    <div id="user-info" style="display: none;">
+                        <span id="user-name"></span>
+                        <button class="nav-btn" onclick="window.location.href='index.htm'"
+                            style="background: #28a745; color: white; margin-right: 10px;">🏠 Trang Chủ</button>
+                        <button id="logout-btn" class="nav-btn"
+                            style="background: #dc3545; color: white;">Đăng Xuất</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="nav-btn active" data-section="dashboard">🏠 Trang Chủ</button>
+            <button class="nav-btn" data-section="profile">👤 Hồ Sơ Cá Nhân</button>
+            <button class="nav-btn" data-section="appointments">📅 Lịch Hẹn</button>
+            <button class="nav-btn" data-section="blood-history">🩸 Lịch Sử Truyền Máu</button>
+            <button class="nav-btn" data-section="blood-info">ℹ️ Thông Tin Máu</button>
+            <button class="nav-btn" data-section="emergency">🚨 Khẩn Cấp</button>
+            <button class="nav-btn" data-section="contact">📬 Liên Hệ</button>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div class="section active" id="dashboard">
+            <h2>🏠 Trang Chủ Bệnh Nhân</h2>
+
+            <div class="dashboard">
+                <div class="card">
+                    <h3>👤 Thông Tin Cá Nhân</h3>
+                    <p>Quản lý hồ sơ y tế của bạn</p>
+                    <div class="stat-number" id="profileStatus">-</div>
+                    <p><small id="profileDetail" class="loading">0</small></p>
+                    <button class="btn btn-primary" onclick="switchToSection('profile')">Xem Hồ Sơ</button>
+                </div>
+
+                <div class="card">
+                    <h3>📅 Lịch Hẹn Sắp Tới</h3>
+                    <p>Lịch khám và truyền máu</p>
+                    <div class="stat-number" id="nextAppointment">-</div>
+                    <p><small id="appointmentDetail" class="loading">0</small></p>
+                    <button class="btn btn-info" onclick="switchToSection('appointments')">Xem Lịch Hẹn</button>
+                </div>
+
+                <div class="card">
+                    <h3>🩸 Lần Truyền Máu Cuối</h3>
+                    <p>Theo dõi lịch sử y tế</p>
+                    <div class="stat-number" id="lastTransfusion">-</div>
+                    <p><small id="transfusionDetail" class="loading">0</small></p>
+                    <button class="btn btn-success" onclick="switchToSection('blood-history')">Xem Lịch Sử</button>
+                </div>
+
+                <div class="card">
+                    <h3>🚨 Cảnh Báo Sức Khỏe</h3>
+                    <p>Thông tin quan trọng về máu</p>
+                    <div class="stat-number" id="healthAlerts">-</div>
+                    <p><small id="alertDetail" class="loading">0</small></p>
+                    <button class="btn btn-warning" onclick="switchToSection('emergency')">Xem Chi Tiết</button>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card">
+                <h3>⚡ Hành Động Nhanh</h3>
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="openAppointmentModal()">📅 Đặt Lịch Hẹn</button>
+                    <button class="btn btn-info" onclick="openUpdateProfileModal()">✏️ Cập Nhật Hồ Sơ</button>
+                    <button class="btn btn-success" onclick="openEmergencyModal()">🚨 Báo Khẩn Cấp</button>
+                    <button class="btn btn-warning" onclick="openBloodInfoModal()">ℹ️ Hỏi Về Máu</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Section -->
+        <div class="section" id="profile">
+            <h2>👤 Hồ Sơ Cá Nhân</h2>
+            <div id="profileMessage" class="message"></div>
+
+            <div class="profile-info">
+                <div class="info-item">
+                    <h4>Họ và Tên</h4>
+                    <p id="patientName">-</p>
+                </div>
+                <div class="info-item">
+                    <h4>Nhóm Máu</h4>
+                    <p id="patientBloodType">-</p>
+                </div>
+                <div class="info-item">
+                    <h4>Ngày Sinh</h4>
+                    <p id="patientDOB">-</p>
+                </div>
+                <div class="info-item">
+                    <h4>Tuổi</h4>
+                    <p id="patientAge">-</p>
+                </div>
+                <div class="info-item">
+                    <h4>Giới Tính</h4>
+                    <p id="patientGender">-</p>
+                </div>
+                <div class="info-item">
+                    <h4>Số Điện Thoại</h4>
+                    <p id="patientPhone">-</p>
+                </div>
+                <div class="info-item">
+                    <h4>Email</h4>
+                    <p id="patientEmail">-</p>
+                </div>
+                <div class="info-item">
+                    <h4>Địa Chỉ</h4>
+                    <p id="patientAddress">-</p>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="openUpdateProfileModal()">✏️ Cập Nhật Thông Tin</button>
+                <button class="btn btn-info" onclick="openMedicalHistoryModal()">📋 Lịch Sử Y Tế</button>
+            </div>
+        </div>
+
+        <!-- Appointments Section -->
+        <div class="section" id="appointments">
+            <h2>📅 Quản Lý Lịch Hẹn</h2>
+            <div id="appointmentMessage" class="message"></div>
+
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="openAppointmentModal()">➕ Đặt Lịch Hẹn Mới</button>
+                <button class="btn btn-secondary" onclick="loadAppointments()">🔄 Làm Mới</button>
+            </div>
+
+            <h3>Lịch Hẹn Sắp Tới</h3>
+            <div id="upcomingAppointments"></div>
+
+            <h3>Lịch Sử Lịch Hẹn</h3>
+            <div id="appointmentHistory"></div>
+        </div>
+
+        <!-- Blood History Section -->
+        <div class="section" id="blood-history">
+            <h2>🩸 Lịch Sử Truyền Máu</h2>
+            <div id="bloodHistoryMessage" class="message"></div>
+
+            <div class="button-group">
+                <button class="btn btn-info" onclick="loadBloodHistory()">🔄 Làm Mới</button>
+                <button class="btn btn-success" onclick="downloadBloodHistory()">📥 Tải Báo Cáo</button>
+            </div>
+
+            <div id="bloodHistoryTable"></div>
+        </div>
+
+        <!-- Blood Information Section -->
+        <div class="section" id="blood-info">
+            <h2>ℹ️ Thông Tin Về Máu</h2>
+            <div id="bloodInfoMessage" class="message"></div>
+
+            <div class="card">
+                <h3>🩸 Nhóm Máu Của Bạn</h3>
+                <div class="stat-number" id="myBloodType">-</div>
+                <p><small id="bloodTypeInfo">Đang tải thông tin...</small></p>
+            </div>
+
+            <div class="card">
+                <h3>💡 Thông Tin Quan Trọng</h3>
+                <ul style="line-height: 1.6;">
+                    <li><strong>Hiến máu:</strong> Người lớn khỏe mạnh có thể hiến máu mỗi 8 tuần</li>
+                    <li><strong>Truyền máu:</strong> Chỉ nhận máu tương thích với nhóm máu của bạn</li>
+                    <li><strong>Khẩn cấp:</strong> Luôn mang thẻ nhóm máu khi đi khám</li>
+                    <li><strong>Sức khỏe:</strong> Duy trì lối sống lành mạnh để có máu khỏe</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>📊 Bảng Tương Thích Nhóm Máu</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nhóm Máu</th>
+                            <th>Có Thể Nhận Máu Từ</th>
+                            <th>Có Thể Cho Máu Cho</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>O-</td><td>O-</td><td>Tất cả nhóm máu</td></tr>
+                        <tr><td>O+</td><td>O-, O+</td><td>O+, A+, B+, AB+</td></tr>
+                        <tr><td>A-</td><td>A-, O-</td><td>A-, A+, AB-, AB+</td></tr>
+                        <tr><td>A+</td><td>A-, A+, O-, O+</td><td>A+, AB+</td></tr>
+                        <tr><td>B-</td><td>B-, O-</td><td>B-, B+, AB-, AB+</td></tr>
+                        <tr><td>B+</td><td>B-, B+, O-, O+</td><td>B+, AB+</td></tr>
+                        <tr><td>AB-</td><td>AB-, A-, B-, O-</td><td>AB-, AB+</td></tr>
+                        <tr><td>AB+</td><td>Tất cả nhóm máu</td><td>AB+</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Emergency Section -->
+        <div class="section" id="emergency">
+            <h2>🚨 Dịch Vụ Khẩn Cấp</h2>
+            <div id="emergencyMessage" class="message"></div>
+
+            <div class="card" style="background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white;">
+                <h3>🚨 CẦN MÁU KHẨN CẤP?</h3>
+                <p>Nếu bạn đang trong tình trạng khẩn cấp và cần truyền máu, hãy liên hệ ngay:</p>
+                <div style="margin: 15px 0;">
+                    <p><strong>📞 Điện thoại:</strong> 1900-xxxx</p>
+                    <p><strong>🏥 Bệnh viện gần nhất:</strong> [Tên bệnh viện]</p>
+                    <p><strong>🕐 Giờ làm việc:</strong> 24/7</p>
+                </div>
+                <button class="btn btn-light" onclick="openEmergencyModal()" style="color: #e74c3c;">📞 Liên Hệ Ngay</button>
+            </div>
+
+            <div class="card">
+                <h3>⚠️ Cảnh Báo Sức Khỏe</h3>
+                <div id="healthAlertsList"></div>
+            </div>
+
+            <div class="card">
+                <h3>📋 Danh Sách Liên Hệ Khẩn Cấp</h3>
+                <div id="emergencyContacts"></div>
+            </div>
+        </div>
+
+        <!-- Modals -->
+        <!-- Update Profile Modal -->
+        <div id="updateProfileModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('updateProfileModal')">&times;</span>
+                <h2>✏️ Cập Nhật Hồ Sơ Cá Nhân</h2>
+                <form id="updateProfileForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Họ và Tên *</label>
+                            <input type="text" id="updateName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Số Điện Thoại</label>
+                            <input type="tel" id="updatePhone">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="updateEmail">
+                        </div>
+                        <div class="form-group">
+                            <label>Giới Tính</label>
+                            <select id="updateGender">
+                                <option value="Male">Nam</option>
+                                <option value="Female">Nữ</option>
+                                <option value="Other">Khác</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Địa Chỉ</label>
+                        <textarea id="updateAddress" rows="3"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Ghi Chú Thêm</label>
+                        <textarea id="updateNotes" rows="2"></textarea>
+                    </div>
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-primary">💾 Cập Nhật</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('updateProfileModal')">❌ Hủy</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Appointment Modal -->
+        <div id="appointmentModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('appointmentModal')">&times;</span>
+                <h2>📅 Đặt Lịch Hẹn</h2>
+                <form id="appointmentForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Loại Lịch Hẹn *</label>
+                            <select id="appointmentType" required>
+                                <option value="">-- Chọn loại --</option>
+                                <option value="checkup">Khám định kỳ</option>
+                                <option value="transfusion">Truyền máu</option>
+                                <option value="consultation">Tư vấn</option>
+                                <option value="emergency">Khẩn cấp</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Ngày Hẹn *</label>
+                            <input type="date" id="appointmentDate" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Giờ Hẹn *</label>
+                            <input type="time" id="appointmentTime" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Bác Sĩ (nếu biết)</label>
+                            <input type="text" id="appointmentDoctor" placeholder="Tên bác sĩ">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Lý Do Hẹn</label>
+                        <textarea id="appointmentReason" rows="3" placeholder="Mô tả triệu chứng hoặc lý do khám..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Ghi Chú Thêm</label>
+                        <textarea id="appointmentNotes" rows="2" placeholder="Yêu cầu đặc biệt..."></textarea>
+                    </div>
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-primary">📅 Đặt Lịch</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('appointmentModal')">❌ Hủy</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Emergency Modal -->
+        <div id="emergencyModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('emergencyModal')">&times;</span>
+                <h2>🚨 Báo Cáo Khẩn Cấp</h2>
+                <div class="message error" style="display: block;">
+                    <strong>Lưu ý:</strong> Chỉ sử dụng tính năng này trong trường hợp thực sự khẩn cấp!
+                </div>
+                <form id="emergencyForm">
+                    <div class="form-group">
+                        <label>Mức Độ Khẩn Cấp *</label>
+                        <select id="emergencyLevel" required>
+                            <option value="">-- Chọn mức độ --</option>
+                            <option value="critical">Nguy Kịch (Cần truyền máu ngay)</option>
+                            <option value="urgent">Khẩn Cấp (Trong 24h)</option>
+                            <option value="important">Quan Trọng (Trong 1 tuần)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Vị Trí Hiện Tại *</label>
+                        <input type="text" id="emergencyLocation" required placeholder="VD: Bệnh viện Việt Đức, Hà Nội">
+                    </div>
+                    <div class="form-group">
+                        <label>Mô Tả Tình Trạng *</label>
+                        <textarea id="emergencyDescription" rows="4" required placeholder="Mô tả chi tiết tình trạng sức khỏe..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Thông Tin Liên Hệ Khẩn Cấp</label>
+                        <input type="tel" id="emergencyContact" placeholder="Số điện thoại người thân">
+                    </div>
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-danger">🚨 Gửi Báo Cáo</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('emergencyModal')">❌ Hủy</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+        <!-- Contact Section -->
+        <div class="section" id="contact">
+            <h2>📬 Liên hệ với chúng tôi</h2>
+            <div id="contactMessage" class="message"></div>
+            <p>Gửi câu hỏi hoặc báo cáo về trải nghiệm sử dụng. Chúng tôi sẽ phản hồi trong vòng 24 giờ.</p>
+            <form id="contactForm" onsubmit="event.preventDefault(); submitContactForm();">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Họ & Tên *</label>
+                        <input type="text" id="contactName" required placeholder="Ví dụ: Nguyễn Văn A">
+                    </div>
+                    <div class="form-group">
+                        <label>Email *</label>
+                        <input type="email" id="contactEmail" required placeholder="ví dụ: abc@domain.com">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Nội dung *</label>
+                    <textarea id="contactMessageInput" rows="4" required placeholder="Nhập nội dung..."></textarea>
+                </div>
+                <div class="button-group">
+                    <button type="submit" class="btn btn-primary">📩 Gửi</button>
+                </div>
+            </form>
+            <p style="margin-top: 15px; font-size: 14px; color: #444;">
+                Hoặc gọi: <strong>+84 123 456 789</strong> | Email: <strong>dinh6601@gmail.com</strong>
+            </p>
+        </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+        let currentPatient = null;
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function () {
+            checkPatientAuth();
+            animateLoadingNumbers();
+            loadPatientDashboard();
+        });
+
+        // Loading animation for numbers
+        function animateLoadingNumbers() {
+            const loadingElements = document.querySelectorAll('.loading');
+            loadingElements.forEach(element => {
+                if (!element.dataset.originalText) {
+                    element.dataset.originalText = element.textContent;
+                }
+                element.dataset.currentNumber = element.dataset.currentNumber || '0';
+                // Clear any existing target and set a new random target number for each page reload
+                delete element.dataset.targetNumber;
+                element.dataset.targetNumber = Math.floor(Math.random() * 900) + 100; // Random number between 100-999
+
+                element.dataset.animationId = setInterval(() => {
+                    let current = parseInt(element.dataset.currentNumber);
+                    let target = parseInt(element.dataset.targetNumber);
+                    let step = Math.ceil((target - current) / 10);
+
+                    if (current >= target) {
+                        // Stop animation when target is reached
+                        element.textContent = target.toLocaleString();
+                        clearInterval(element.dataset.animationId);
+                        return;
+                    }
+
+                    current += step;
+                    element.dataset.currentNumber = current;
+                    element.textContent = current.toLocaleString();
+                }, 100);
+            });
+        }
+
+        function stopLoadingAnimation() {
+            const loadingElements = document.querySelectorAll('.loading');
+            loadingElements.forEach(element => {
+                if (element.dataset.animationId) {
+                    clearInterval(element.dataset.animationId);
+                    element.textContent = element.dataset.originalText || '0';
+                }
+            });
+        }
+
+        // Patient authentication
+        function checkPatientAuth() {
+            try {
+                const savedUser = localStorage.getItem('currentUser');
+                if (savedUser) {
+                    const user = JSON.parse(savedUser);
+                    if (user.role === 'Patient') {
+                        currentPatient = user;
+                        showPatientInfo(user);
+                    } else {
+                        // Not a patient, redirect
+                        window.location.href = 'index.htm';
+                    }
+                } else {
+                    showLoginButton();
+                }
+            } catch (error) {
+                console.error('Error parsing user data:', error);
+                localStorage.removeItem('currentUser');
+                showLoginButton();
+            }
+        }
+
+        function showPatientInfo(patient) {
+            document.getElementById('login-btn').style.display = 'none';
+            document.getElementById('user-info').style.display = 'block';
+            document.getElementById('user-name').textContent = `👨‍⚕️ ${patient.fullName || patient.name} (Bệnh nhân)`;
+        }
+
+        function showLoginButton() {
+            document.getElementById('login-btn').style.display = 'inline-block';
+            document.getElementById('user-info').style.display = 'none';
+        }
+
+        // Navigation
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const section = this.dataset.section;
+                switchToSection(section);
+            });
+        });
+
+        function switchToSection(sectionId) {
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+
+            event.target.classList.add('active');
+            document.getElementById(sectionId).classList.add('active');
+
+            // Load section data
+            switch (sectionId) {
+                case 'profile':
+                    loadPatientProfile();
+                    break;
+                case 'appointments':
+                    loadAppointments();
+                    break;
+                case 'blood-history':
+                    loadBloodHistory();
+                    break;
+                case 'blood-info':
+                    loadBloodInfo();
+                    break;
+                case 'emergency':
+                    loadEmergencyInfo();
+                    break;
+            }
+        }
+
+        // Dashboard functions
+        async function loadPatientDashboard() {
+            if (!currentPatient) return;
+
+            try {
+                // Mock data for dashboard
+                document.getElementById('profileStatus').textContent = 'Hoàn chỉnh';
+                document.getElementById('profileDetail').innerHTML = '<span class="badge badge-success">Cập nhật gần đây</span>';
+
+                document.getElementById('nextAppointment').textContent = '2';
+                document.getElementById('appointmentDetail').innerHTML = '<span class="badge badge-info">Trong tháng này</span>';
+
+                document.getElementById('lastTransfusion').textContent = '30';
+                document.getElementById('transfusionDetail').innerHTML = '<span class="badge badge-success">Ngày trước</span>';
+
+                document.getElementById('healthAlerts').textContent = '0';
+                document.getElementById('alertDetail').innerHTML = '<span class="badge badge-success">Không có cảnh báo</span>';
+
+                stopLoadingAnimation();
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+                stopLoadingAnimation();
+            }
+        }
+
+        // Profile functions
+        async function loadPatientProfile() {
+            if (!currentPatient) {
+                showMessage('profileMessage', 'Vui lòng đăng nhập để xem hồ sơ!', 'error');
+                return;
+            }
+
+            try {
+                // Load patient data from API or local storage
+                const patientData = currentPatient;
+
+                document.getElementById('patientName').textContent = patientData.name || 'Chưa cập nhật';
+                document.getElementById('patientBloodType').textContent = patientData.bloodType || 'Chưa xác định';
+                document.getElementById('patientDOB').textContent = patientData.dateOfBirth ?
+                    new Date(patientData.dateOfBirth).toLocaleDateString('vi-VN') : 'Chưa cập nhật';
+                document.getElementById('patientAge').textContent = patientData.dateOfBirth ?
+                    new Date().getFullYear() - new Date(patientData.dateOfBirth).getFullYear() : 'N/A';
+                document.getElementById('patientGender').textContent = patientData.gender || 'Chưa cập nhật';
+                document.getElementById('patientPhone').textContent = patientData.phone || 'Chưa cập nhật';
+                document.getElementById('patientEmail').textContent = patientData.email || 'Chưa cập nhật';
+                document.getElementById('patientAddress').textContent = patientData.address || 'Chưa cập nhật';
+
+                // Fill update form
+                document.getElementById('updateName').value = patientData.name || '';
+                document.getElementById('updatePhone').value = patientData.phone || '';
+                document.getElementById('updateEmail').value = patientData.email || '';
+                document.getElementById('updateGender').value = patientData.gender || '';
+                document.getElementById('updateAddress').value = patientData.address || '';
+                document.getElementById('updateNotes').value = patientData.notes || '';
+
+            } catch (error) {
+                console.error('Error loading profile:', error);
+                showMessage('profileMessage', 'Không thể tải thông tin hồ sơ!', 'error');
+            }
+        }
+
+        // Appointments functions
+        async function loadAppointments() {
+            // Mock appointment data
+            const appointments = [
+                {
+                    id: 1,
+                    type: 'Khám định kỳ',
+                    date: '2024-01-15',
+                    time: '09:00',
+                    status: 'confirmed',
+                    doctor: 'Dr. Cao Minh Hưng'
+                },
+                {
+                    id: 2,
+                    type: 'Truyền máu',
+                    date: '2024-01-20',
+                    time: '14:00',
+                    status: 'pending',
+                    doctor: 'Dr. Trần Minh Quân'
+                }
+            ];
+
+            let upcomingHtml = '';
+            let historyHtml = '';
+
+            appointments.forEach(apt => {
+                const statusBadge = apt.status === 'confirmed' ?
+                    '<span class="badge badge-success">Đã xác nhận</span>' :
+                    '<span class="badge badge-warning">Chờ xác nhận</span>';
+
+                const cardHtml = `
+                    <div class="appointment-card">
+                        <h4>${apt.type}</h4>
+                        <p><strong>Ngày:</strong> ${new Date(apt.date).toLocaleDateString('vi-VN')}</p>
+                        <p><strong>Giờ:</strong> ${apt.time}</p>
+                        <p><strong>Bác sĩ:</strong> ${apt.doctor}</p>
+                        <p><strong>Trạng thái:</strong> ${statusBadge}</p>
+                    </div>
+                `;
+
+                if (new Date(apt.date) >= new Date()) {
+                    upcomingHtml += cardHtml;
+                } else {
+                    historyHtml += cardHtml;
+                }
+            });
+
+            document.getElementById('upcomingAppointments').innerHTML = upcomingHtml || '<p>Không có lịch hẹn sắp tới</p>';
+            document.getElementById('appointmentHistory').innerHTML = historyHtml || '<p>Không có lịch sử hẹn</p>';
+        }
+
+        // Blood history functions
+        async function loadBloodHistory() {
+            // Mock blood transfusion history
+            const history = [
+                {
+                    id: 1,
+                    date: '2023-12-15',
+                    bloodType: 'A+',
+                    volume: '450ml',
+                    hospital: 'Bệnh viện Việt Đức',
+                    reason: 'Phẫu thuật'
+                },
+                {
+                    id: 2,
+                    date: '2023-06-20',
+                    bloodType: 'A+',
+                    volume: '450ml',
+                    hospital: 'Bệnh viện Bạch Mai',
+                    reason: 'Tai nạn'
+                }
+            ];
+
+            let html = '';
+            if (history.length === 0) {
+                html = '<div class="no-data">Chưa có lịch sử truyền máu</div>';
+            } else {
+                html = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Ngày</th>
+                                <th>Nhóm Máu</th>
+                                <th>Thể Tích</th>
+                                <th>Bệnh Viện</th>
+                                <th>Lý Do</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                history.forEach(item => {
+                    html += `
+                        <tr>
+                            <td>${new Date(item.date).toLocaleDateString('vi-VN')}</td>
+                            <td><strong>${item.bloodType}</strong></td>
+                            <td>${item.volume}</td>
+                            <td>${item.hospital}</td>
+                            <td>${item.reason}</td>
+                        </tr>
+                    `;
+                });
+                html += '</tbody></table>';
+            }
+            document.getElementById('bloodHistoryTable').innerHTML = html;
+        }
+
+        // Blood info functions
+        function loadBloodInfo() {
+            if (currentPatient) {
+                document.getElementById('myBloodType').textContent = currentPatient.bloodType || 'Chưa xác định';
+                document.getElementById('bloodTypeInfo').textContent = currentPatient.bloodType ?
+                    `Nhóm máu ${currentPatient.bloodType} của bạn thuộc nhóm máu phổ biến.` :
+                    'Vui lòng cập nhật nhóm máu trong hồ sơ cá nhân.';
+            }
+        }
+
+        // Emergency functions
+        function loadEmergencyInfo() {
+            // Mock emergency contacts
+            const contacts = [
+                { name: 'Bệnh viện Việt Đức', phone: '1900-1234', address: '40 Tràng Thi, Hà Nội' },
+                { name: 'Bệnh viện Bạch Mai', phone: '1900-5678', address: '78 Giải Phóng, Hà Nội' },
+                { name: 'Trung tâm Máu Quốc Gia', phone: '1900-9999', address: 'Đống Đa, Hà Nội' }
+            ];
+
+            let html = '<div class="button-group">';
+            contacts.forEach(contact => {
+                html += `<button class="btn btn-info" onclick="callEmergency('${contact.phone}')">📞 ${contact.name}</button>`;
+            });
+            html += '</div>';
+
+            document.getElementById('emergencyContacts').innerHTML = html;
+
+            // Mock health alerts
+            document.getElementById('healthAlertsList').innerHTML = `
+                <div class="message info" style="display: block;">
+                    <strong>✅ Tình trạng sức khỏe:</strong> Bình thường - Không có cảnh báo nào.
+                </div>
+            `;
+        }
+
+        // Modal functions
+        function openUpdateProfileModal() {
+            if (!currentPatient) {
+                showMessage('profileMessage', 'Vui lòng đăng nhập trước!', 'error');
+                return;
+            }
+            document.getElementById('updateProfileModal').style.display = 'block';
+        }
+
+        function openAppointmentModal() {
+            document.getElementById('appointmentModal').style.display = 'block';
+        }
+
+        function openEmergencyModal() {
+            document.getElementById('emergencyModal').style.display = 'block';
+        }
+
+        function openBloodInfoModal() {
+            switchToSection('blood-info');
+            closeModal('emergencyModal');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Form handlers
+        document.getElementById('updateProfileForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const updatedData = {
+                name: document.getElementById('updateName').value,
+                phone: document.getElementById('updatePhone').value,
+                email: document.getElementById('updateEmail').value,
+                gender: document.getElementById('updateGender').value,
+                address: document.getElementById('updateAddress').value,
+                notes: document.getElementById('updateNotes').value
+            };
+
+            // Update local storage
+            const updatedPatient = { ...currentPatient, ...updatedData };
+            localStorage.setItem('currentPatient', JSON.stringify(updatedPatient));
+            currentPatient = updatedPatient;
+
+            showMessage('profileMessage', '✅ Hồ sơ đã được cập nhật thành công!', 'success');
+            closeModal('updateProfileModal');
+            loadPatientProfile();
+        });
+
+        document.getElementById('appointmentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const appointmentData = {
+                type: document.getElementById('appointmentType').value,
+                date: document.getElementById('appointmentDate').value,
+                time: document.getElementById('appointmentTime').value,
+                doctor: document.getElementById('appointmentDoctor').value,
+                reason: document.getElementById('appointmentReason').value,
+                notes: document.getElementById('appointmentNotes').value,
+                patientId: currentPatient?.id,
+                status: 'pending'
+            };
+
+            // Save to local storage (in real app, send to API)
+            const appointments = JSON.parse(localStorage.getItem('patientAppointments') || '[]');
+            appointments.push({ ...appointmentData, id: Date.now() });
+            localStorage.setItem('patientAppointments', JSON.stringify(appointments));
+
+            showMessage('appointmentMessage', '✅ Lịch hẹn đã được đặt thành công!', 'success');
+            closeModal('appointmentModal');
+            loadAppointments();
+        });
+
+        document.getElementById('emergencyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const emergencyData = {
+                level: document.getElementById('emergencyLevel').value,
+                location: document.getElementById('emergencyLocation').value,
+                description: document.getElementById('emergencyDescription').value,
+                contact: document.getElementById('emergencyContact').value,
+                patientId: currentPatient?.id,
+                timestamp: new Date().toISOString()
+            };
+
+            // In real app, send to emergency API
+            alert(`🚨 Báo cáo khẩn cấp đã được gửi!\n\nMức độ: ${emergencyData.level}\nVị trí: ${emergencyData.location}\n\nVui lòng giữ liên lạc với bệnh viện.`);
+
+            showMessage('emergencyMessage', '✅ Báo cáo khẩn cấp đã được gửi!', 'success');
+            closeModal('emergencyModal');
+        });
+
+        // Utility functions
+        function showMessage(elementId, message, type) {
+            const elem = document.getElementById(elementId);
+            elem.textContent = message;
+            elem.className = `message ${type}`;
+            setTimeout(() => {
+                elem.className = 'message';
+            }, 5000);
+        }
+
+        // Contact form helpers
+        function saveContactMessage(message) {
+            const stored = JSON.parse(localStorage.getItem('contactMessages') || '[]');
+            stored.push(message);
+            localStorage.setItem('contactMessages', JSON.stringify(stored));
+        }
+
+        async function submitContactForm() {
+            const name = document.getElementById('contactName').value.trim();
+            const email = document.getElementById('contactEmail').value.trim();
+            const messageText = document.getElementById('contactMessageInput').value.trim();
+
+            if (!name || !email || !messageText) {
+                showMessage('contactMessage', '✗ Vui lòng điền đầy đủ thông tin.', 'error');
+                return;
+            }
+
+            const payload = {
+                name,
+                email,
+                message: messageText,
+                sendTo: 'dinh6601@gmail.com'
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/contact`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(errorText || 'Lỗi khi gửi email');
+                }
+
+                showMessage('contactMessage', '✓ Tin nhắn đã được gửi tự động!', 'success');
+                saveContactMessage({
+                    id: Date.now(),
+                    name,
+                    email,
+                    message: messageText,
+                    date: new Date().toISOString()
+                });
+                document.getElementById('contactForm').reset();
+            } catch (error) {
+                console.error('Contact send error:', error);
+                showMessage('contactMessage', '✗ Không thể gửi tin nhắn. Vui lòng thử lại.', 'error');
+            }
+        }
+
+        function callEmergency(phone) {
+            if (confirm(`Gọi ${phone}?`)) {
+                window.open(`tel:${phone}`);
+            }
+        }
+
+        function downloadBloodHistory() {
+            alert('Tính năng tải báo cáo đang được phát triển');
+        }
+
+        // Logout function
+        document.getElementById('logout-btn').addEventListener('click', function() {
+            localStorage.removeItem('currentUser');
+            currentPatient = null;
+            window.location.href = 'index.htm';
+        });
+    </script>
+</body>
+
+</html>

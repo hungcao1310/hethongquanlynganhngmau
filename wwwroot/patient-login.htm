@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng Nhập Bệnh Nhân - Blood Bank Manager</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .logo {
+            margin-bottom: 30px;
+        }
+
+        .logo h1 {
+            color: #667eea;
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .logo p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .patient-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            margin-bottom: 20px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .message {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .links {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        .links a {
+            color: #667eea;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .links a:hover {
+            text-decoration: underline;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .user-info {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            text-align: left;
+        }
+
+        .user-info h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .user-info p {
+            margin-bottom: 5px;
+            color: #666;
+        }
+
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .logout-btn:hover {
+            background: #c82333;
+        }
+
+        .patient-badge {
+            background: #28a745;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <div class="patient-icon">👨‍⚕️</div>
+            <h1>🏥 Blood Bank Manager</h1>
+            <p>Đăng nhập dành cho bệnh nhân</p>
+            <div class="patient-badge">BỆNH NHÂN</div>
+        </div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required placeholder="benhnhan@email.com">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Mật khẩu:</label>
+                <input type="password" id="password" name="password" required placeholder="Nhập mật khẩu">
+            </div>
+
+            <button type="submit" class="login-btn" id="loginBtn">
+                <span id="btnText">Đăng Nhập</span>
+            </button>
+        </form>
+
+        <div id="message" class="message"></div>
+
+        <div class="user-info" id="userInfo">
+            <h3>Thông tin bệnh nhân</h3>
+            <p><strong>Họ tên:</strong> <span id="userName"></span></p>
+            <p><strong>Email:</strong> <span id="userEmail"></span></p>
+            <p><strong>Mã bệnh nhân:</strong> <span id="patientCode"></span></p>
+            <p><strong>Nhóm máu:</strong> <span id="bloodType"></span></p>
+            <button class="logout-btn" onclick="logout()">Đăng Xuất</button>
+        </div>
+
+        <div class="links">
+            <a href="/index.htm">Quay lại trang chủ</a>
+            <a href="http://localhost:5000/register.htm">Đăng ký tài khoản</a>
+            <a href="/login.htm">Đăng nhập nhân viên</a>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = (function () {
+            if (window.location.protocol.startsWith('http')) {
+                return `${window.location.protocol}//${window.location.host}/api`;
+            }
+            return 'http://localhost:5000/api';
+        })();
+        let currentUser = null;
+
+        // Check if user is already logged in
+        document.addEventListener('DOMContentLoaded', function () {
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                // Only show if user is a patient
+                if (currentUser.role === 'Patient') {
+                    showUserInfo(currentUser);
+                } else {
+                    localStorage.removeItem('currentUser');
+                    showMessage('Vui lòng sử dụng trang đăng nhập dành cho nhân viên!', 'error');
+                }
+            }
+        });
+
+        // Login form submission
+        document.getElementById('loginForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const loginBtn = document.getElementById('loginBtn');
+            const btnText = document.getElementById('btnText');
+
+            // Show loading state
+            loginBtn.disabled = true;
+            btnText.textContent = 'Đang đăng nhập...';
+            const loading = document.createElement('div');
+            loading.className = 'loading';
+            loginBtn.appendChild(loading);
+
+            try {
+                const response = await fetch(`${API_BASE}/account/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    currentUser = data.user || data;
+                    currentUser.roles = data.roles || [];
+
+                    // Check if user is a patient
+                    if (currentUser.role === 'Patient') {
+                        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                        showMessage('Đăng nhập thành công!', 'success');
+                        await loadPatientDetails(currentUser.patientId);
+                        showUserInfo(currentUser);
+
+                        // Redirect to patient portal after successful login
+                        setTimeout(() => {
+                            window.location.href = 'patient-portal.htm';
+                        }, 1500);
+                    } else {
+                        showMessage('Tài khoản này không phải là bệnh nhân. Vui lòng sử dụng trang đăng nhập nhân viên!', 'error');
+                    }
+                } else {
+                    showMessage(data.message || 'Đăng nhập thất bại!', 'error');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showMessage('Lỗi kết nối. Vui lòng thử lại!', 'error');
+            } finally {
+                // Reset button state
+                loginBtn.disabled = false;
+                btnText.textContent = 'Đăng Nhập';
+                const loadingElement = loginBtn.querySelector('.loading');
+                if (loadingElement) {
+                    loginBtn.removeChild(loadingElement);
+                }
+            }
+        });
+
+        // Load patient details
+        async function loadPatientDetails(patientId) {
+            if (!patientId) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/patients/${patientId}`);
+                if (response.ok) {
+                    const patient = await response.json();
+                    currentUser.patientDetails = patient;
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                }
+            } catch (error) {
+                console.error('Error loading patient details:', error);
+            }
+        }
+
+        // Logout function
+        async function logout() {
+            try {
+                const response = await fetch(`${API_BASE}/account/logout`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (response.ok) {
+                    localStorage.removeItem('currentUser');
+                    currentUser = null;
+                    hideUserInfo();
+                    showMessage('Đăng xuất thành công!', 'success');
+                    document.getElementById('loginForm').reset();
+                } else {
+                    showMessage('Lỗi khi đăng xuất!', 'error');
+                }
+            } catch (error) {
+                console.error('Logout error:', error);
+                // Force logout on client side
+                localStorage.removeItem('currentUser');
+                currentUser = null;
+                hideUserInfo();
+            }
+        }
+
+        // Show user information
+        function showUserInfo(user) {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('userInfo').style.display = 'block';
+            document.getElementById('userName').textContent = user.fullName;
+            document.getElementById('userEmail').textContent = user.email;
+
+            if (user.patientDetails) {
+                document.getElementById('patientCode').textContent = user.patientDetails.patientCode || 'Chưa cập nhật';
+                document.getElementById('bloodType').textContent = getBloodTypeName(user.patientDetails.bloodTypeId);
+            } else {
+                document.getElementById('patientCode').textContent = 'Đang tải...';
+                document.getElementById('bloodType').textContent = 'Đang tải...';
+            }
+        }
+
+        // Hide user information
+        function hideUserInfo() {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('userInfo').style.display = 'none';
+        }
+
+        // Show message
+        function showMessage(text, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type}`;
+            messageDiv.style.display = 'block';
+
+            // Auto hide after 5 seconds
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        // Get blood type name from ID
+        function getBloodTypeName(bloodTypeId) {
+            const bloodTypes = {
+                1: 'O âm (O-)',
+                2: 'O dương (O+)',
+                3: 'A âm (A-)',
+                4: 'A dương (A+)',
+                5: 'B âm (B-)',
+                6: 'B dương (B+)',
+                7: 'AB âm (AB-)',
+                8: 'AB dương (AB+)'
+            };
+            return bloodTypes[bloodTypeId] || 'Chưa xác định';
+        }
+
+        // Utility function to get auth headers for future API calls
+        function getAuthHeaders() {
+            return {
+                'Content-Type': 'application/json',
+                // Add JWT token here when implemented
+                // 'Authorization': `Bearer ${currentUser.token}`
+            };
+        }
+    </script>
+</body>
+
+</html>
