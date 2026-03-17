@@ -1,0 +1,1740 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Staff Dashboard - Blood Bank Manager</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Keyframe Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px rgba(102, 126, 234, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(102, 126, 234, 0.8), 0 0 30px rgba(102, 126, 234, 0.6); }
+            100% { box-shadow: 0 0 5px rgba(102, 126, 234, 0.5); }
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c);
+            background-size: 400% 400%;
+            min-height: 100vh;
+            padding: 20px;
+            animation: fadeIn 1s ease-out, gradientShift 15s ease infinite;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            text-align: center;
+            animation: slideInLeft 0.8s ease-out 0.2s both;
+        }
+
+        header h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            animation: fadeIn 1s ease-out 0.5s both;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            animation: slideInRight 0.8s ease-out 0.4s both;
+        }
+
+        .nav-btn {
+            padding: 12px 24px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .nav-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+            animation: bounce 0.6s ease-in-out;
+        }
+
+        .nav-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+            animation: glow 2s infinite;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+            animation: fadeIn 1s ease-out 0.6s both;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: slideInLeft 0.8s ease-out 0.8s both;
+        }
+
+        .card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+            animation: pulse 0.6s ease-in-out;
+        }
+
+        .card:nth-child(even) {
+            animation: slideInRight 0.8s ease-out 0.8s both;
+        }
+
+        .card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #764ba2;
+            margin: 15px 0;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .badge-success {
+            background: #d5f4e6;
+            color: #27ae60;
+        }
+
+        .badge-danger {
+            background: #fadbd8;
+            color: #e74c3c;
+        }
+
+        .badge-warning {
+            background: #fdeee8;
+            color: #e67e22;
+        }
+
+        .section {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            display: none;
+            animation: fadeIn 0.8s ease-out both;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 22px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+            animation: slideInLeft 0.6s ease-out both;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            animation: fadeIn 1s ease-out 0.5s both;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            animation: slideInLeft 0.6s ease-out both;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #eee;
+            transition: background-color 0.3s;
+        }
+
+        tr:hover {
+            background: #f5f5f5;
+            transform: scale(1.01);
+            transition: all 0.3s;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            animation: fadeIn 0.8s ease-out both;
+        }
+
+        .form-group:nth-child(odd) {
+            animation-delay: 0.1s;
+        }
+
+        .form-group:nth-child(even) {
+            animation-delay: 0.2s;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #333;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            font-size: 14px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #7f8c8d;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(149, 165, 166, 0.3);
+        }
+
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #229954;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(39, 174, 96, 0.3);
+        }
+
+        .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3);
+        }
+
+        .btn-warning {
+            background: #f39c12;
+            color: white;
+        }
+
+        .btn-warning:hover {
+            background: #e67e22;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(243, 156, 18, 0.3);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+            animation: slideInLeft 0.5s ease-out both;
+        }
+
+        .message.success {
+            background: #d5f4e6;
+            color: #27ae60;
+            border-left: 4px solid #27ae60;
+            display: block;
+        }
+
+        .message.error {
+            background: #fadbd8;
+            color: #e74c3c;
+            border-left: 4px solid #e74c3c;
+            display: block;
+        }
+
+        .loading {
+            color: #667eea;
+            font-style: normal;
+            font-weight: bold;
+            font-size: 16px;
+            animation: pulse 1s infinite;
+        }
+
+        .no-data {
+            color: #999;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            animation: slideInLeft 0.3s ease-out;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #667eea;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-tabs {
+                flex-direction: column;
+            }
+
+            .nav-btn {
+                width: 100%;
+                text-align: left;
+            }
+
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1>🏥 Staff Dashboard - Blood Bank Manager</h1>
+                    <p>Quản lý hệ thống ngân hàng máu - Dành cho nhân viên</p>
+                </div>
+                <div id="auth-section">
+                    <button id="login-btn" class="nav-btn" onclick="window.location.href='login.htm'">
+                        🔐 Đăng Nhập
+                    </button>
+                    <div id="user-info" style="display: none;">
+                        <span id="user-name"></span>
+                        <button class="nav-btn" onclick="window.location.href='index.htm'"
+                            style="background: #28a745; color: white; margin-right: 10px;">🏠 Trang Chủ</button>
+                        <button id="logout-btn" class="nav-btn"
+                            style="background: #dc3545; color: white;">Đăng Xuất</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="nav-btn active" data-section="dashboard">📊 Tổng Quan</button>
+            <button class="nav-btn" data-section="blood-management">🩸 Quản Lý Nhóm Máu</button>
+            <button class="nav-btn" data-section="inventory-management">📦 Quản Lý Kho</button>
+            <button class="nav-btn" data-section="patient-management">👨‍⚕️ Quản Lý Bệnh Nhân</button>
+            <button class="nav-btn" data-section="pricing-management">💰 Quản Lý Giá Cả</button>
+            <button class="nav-btn" data-section="reports">📈 Báo Cáo</button>
+            <button class="nav-btn" data-section="contact">📬 Liên Hệ</button>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div class="section active" id="dashboard">
+            <h2>📊 Thống Kê Tổng Quan</h2>
+            <div class="dashboard">
+                <div class="card">
+                    <h3>🩸 Tổng Nhóm Máu</h3>
+                    <div class="stat-number" id="totalBloodTypes">-</div>
+                    <p><small id="bloodTypesStatus" class="loading">0</small></p>
+                </div>
+
+                <div class="card">
+                    <h3>📦 Tổng Kho Máu</h3>
+                    <div class="stat-number" id="totalInventory">-</div>
+                    <p><small id="inventoryStatus" class="loading">0</small></p>
+                </div>
+
+                <div class="card">
+                    <h3>👨‍⚕️ Tổng Bệnh Nhân</h3>
+                    <div class="stat-number" id="totalPatients">-</div>
+                    <p><small id="patientsStatus" class="loading">0</small></p>
+                </div>
+
+                <div class="card">
+                    <h3>💰 Tổng Giá Trị (USD)</h3>
+                    <div class="stat-number" id="totalValue">-</div>
+                    <p><small id="valueStatus" class="loading">0</small></p>
+                </div>
+
+                <div class="card">
+                    <h3>⚠️ Cần Cảnh Báo</h3>
+                    <div class="stat-number" id="alertsCount">-</div>
+                    <p><small id="alertsStatus" class="loading">0</small></p>
+                </div>
+
+                <div class="card">
+                    <h3>📅 Hôm Nay</h3>
+                    <div class="stat-number" id="todayActivity">-</div>
+                    <p><small id="activityStatus" class="loading">0</small></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Blood Type Management Section -->
+        <div class="section" id="blood-management">
+            <h2>🩸 Quản Lý Nhóm Máu</h2>
+            <div id="bloodTypeMessage" class="message"></div>
+
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="openAddBloodTypeModal()">➕ Thêm Nhóm Máu</button>
+                <button class="btn btn-secondary" onclick="loadBloodTypes()">🔄 Làm Mới</button>
+            </div>
+
+            <div id="bloodTypesTable"></div>
+        </div>
+
+        <!-- Inventory Management Section -->
+        <div class="section" id="inventory-management">
+            <h2>📦 Quản Lý Kho Máu</h2>
+            <div id="inventoryMessage" class="message"></div>
+
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="openAddInventoryModal()">➕ Nhập Kho</button>
+                <button class="btn btn-warning" onclick="openUpdateInventoryModal()">✏️ Cập Nhật</button>
+                <button class="btn btn-secondary" onclick="loadInventory()">🔄 Làm Mới</button>
+            </div>
+
+            <div id="inventoryTable"></div>
+        </div>
+
+        <!-- Patient Management Section -->
+        <div class="section" id="patient-management">
+            <h2>👨‍⚕️ Quản Lý Bệnh Nhân</h2>
+            <div id="patientMessage" class="message"></div>
+
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="openAddPatientModal()">➕ Thêm Bệnh Nhân</button>
+                <button class="btn btn-warning" onclick="openUpdatePatientModal()">✏️ Cập Nhật</button>
+                <button class="btn btn-secondary" onclick="loadPatients()">🔄 Làm Mới</button>
+            </div>
+
+            <div id="patientsTable"></div>
+        </div>
+
+        <!-- Pricing Management Section -->
+        <div class="section" id="pricing-management">
+            <h2>💰 Quản Lý Giá Cả (USD)</h2>
+            <div id="pricingMessage" class="message"></div>
+
+            <div class="pricing-grid" id="pricingCards"></div>
+
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="savePrices()">💾 Lưu Giá Cả</button>
+                <button class="btn btn-secondary" onclick="loadPrices()">🔄 Tải Lại</button>
+            </div>
+
+            <h3 style="margin-top: 30px; color: #667eea; margin-bottom: 20px;">Tóm Tắt Giá Trị Kho (USD)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nhóm Máu</th>
+                        <th>Giá/Lít (USD)</th>
+                        <th>Số Lượng (Lít)</th>
+                        <th>Tổng Giá Trị (USD)</th>
+                    </tr>
+                </thead>
+                <tbody id="pricingSummary"></tbody>
+            </table>
+        </div>
+
+        <!-- Reports Section -->
+        <div class="section" id="reports">
+            <h2>📈 Báo Cáo & Thống Kê</h2>
+            <div id="reportsMessage" class="message"></div>
+
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="generateInventoryReport()">📊 Báo Cáo Kho</button>
+                <button class="btn btn-success" onclick="generatePatientReport()">👥 Báo Cáo Bệnh Nhân</button>
+                <button class="btn btn-warning" onclick="generateFinancialReport()">💰 Báo Cáo Tài Chính</button>
+            </div>
+
+            <div id="reportsContent"></div>
+        </div>
+
+        <!-- Contact Section -->
+        <div class="section" id="contact">
+            <h2>📬 Liên hệ với chúng tôi</h2>
+            <div id="contactMessage" class="message"></div>
+            <p>Gửi câu hỏi hoặc báo cáo lỗi nhanh chóng. Chúng tôi sẽ phản hồi sớm nhất có thể.</p>
+            <form id="contactForm" onsubmit="event.preventDefault(); submitContactForm();">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Họ & Tên *</label>
+                        <input type="text" id="contactName" required placeholder="Ví dụ: Nguyễn Văn A">
+                    </div>
+                    <div class="form-group">
+                        <label>Email *</label>
+                        <input type="email" id="contactEmail" required placeholder="ví dụ: abc@domain.com">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Nội dung *</label>
+                    <textarea id="contactMessageInput" rows="4" required placeholder="Viết nội dung..."></textarea>
+                </div>
+                <div class="button-group">
+                    <button type="submit" class="btn btn-primary">📩 Gửi</button>
+                </div>
+            </form>
+            <p style="margin-top: 15px; font-size: 14px; color: #444;">
+                Hoặc gọi: <strong>+84 123 456 789</strong> | Email: <strong>dinh6601@gmail.com</strong>
+            </p>
+        </div>
+
+        <!-- Modals -->
+        <!-- Add Blood Type Modal -->
+        <div id="addBloodTypeModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('addBloodTypeModal')">&times;</span>
+                <h2>➕ Thêm Nhóm Máu Mới</h2>
+                <form id="addBloodTypeForm">
+                    <div class="form-group">
+                        <label>Tên Nhóm Máu *</label>
+                        <input type="text" id="newBloodTypeName" required placeholder="VD: O+, A-, AB+">
+                    </div>
+                    <div class="form-group">
+                        <label>Mô Tả</label>
+                        <textarea id="newBloodTypeDescription" rows="3" placeholder="Mô tả về nhóm máu..."></textarea>
+                    </div>
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-primary">💾 Lưu</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('addBloodTypeModal')">❌ Hủy</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Add Inventory Modal -->
+        <div id="addInventoryModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('addInventoryModal')">&times;</span>
+                <h2>📦 Nhập Kho Máu</h2>
+                <form id="addInventoryForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nhóm Máu *</label>
+                            <select id="inventoryBloodType" required>
+                                <option value="">-- Chọn Nhóm Máu --</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Tổng Số Đơn Vị *</label>
+                            <input type="number" id="inventoryTotalUnits" min="1" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Số Đơn Vị Có Sẵn *</label>
+                            <input type="number" id="inventoryAvailableUnits" min="0" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Tổng Thể Tích (ml) *</label>
+                            <input type="number" id="inventoryTotalVolume" min="0" step="0.1" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Ngưỡng Cảnh Báo (ml) *</label>
+                            <input type="number" id="inventoryLowStockThreshold" min="0" step="0.1" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Ngày Nhập</label>
+                            <input type="date" id="inventoryEntryDate">
+                        </div>
+                    </div>
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-primary">💾 Lưu</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('addInventoryModal')">❌ Hủy</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Patient Payment Modal -->
+        <div id="patientPaymentModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('patientPaymentModal')">&times;</span>
+                <h2>💳 Thanh Toán Cho Bệnh Nhân</h2>
+                <div id="paymentMessage" class="message"></div>
+                <form id="paymentForm">
+                    <div class="form-group">
+                        <label>Bệnh nhân</label>
+                        <input type="text" id="paymentPatientName" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label>Số tiền (VND) *</label>
+                        <input type="number" id="paymentAmount" min="1" required placeholder="VD: 500000">
+                    </div>
+                    <div class="form-group">
+                        <label>Phương thức</label>
+                        <select id="paymentMethod">
+                            <option value="Tiền mặt">Tiền mặt</option>
+                            <option value="Chuyển khoản">Chuyển khoản</option>
+                            <option value="Thẻ">Thẻ</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Ghi chú</label>
+                        <textarea id="paymentNotes" rows="2" placeholder="Ghi chú thêm..."></textarea>
+                    </div>
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-primary">💾 Xác nhận thanh toán</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('patientPaymentModal')">❌ Hủy</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Payment History Modal -->
+        <div id="paymentHistoryModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('paymentHistoryModal')">&times;</span>
+                <h2>📄 Lịch Sử Thanh Toán</h2>
+                <div id="paymentHistoryContent"></div>
+            </div>
+        </div>
+
+        <!-- Add Patient Modal -->
+        <div id="addPatientModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('addPatientModal')">&times;</span>
+                <h2>👨‍⚕️ Thêm Bệnh Nhân Mới</h2>
+                <form id="addPatientForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Tên Bệnh Nhân *</label>
+                            <input type="text" id="patientName" required placeholder="VD: Nguyễn Văn A">
+                        </div>
+                        <div class="form-group">
+                            <label>Nhóm Máu *</label>
+                            <select id="patientBloodType" required>
+                                <option value="">-- Chọn Nhóm Máu --</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Ngày Sinh *</label>
+                            <input type="date" id="patientDOB" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Giới Tính</label>
+                            <select id="patientGender">
+                                <option value="Male">Nam</option>
+                                <option value="Female">Nữ</option>
+                                <option value="Other">Khác</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Số Điện Thoại</label>
+                            <input type="tel" id="patientPhone" placeholder="VD: 0123456789">
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="patientEmail" placeholder="VD: patient@example.com">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Địa Chỉ</label>
+                        <textarea id="patientAddress" rows="2" placeholder="Địa chỉ hiện tại..."></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Đang Điều Trị</label>
+                            <select id="patientUnderTreatment">
+                                <option value="false">Không</option>
+                                <option value="true">Có</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Tình Trạng Khẩn Cấp</label>
+                            <select id="patientEmergency">
+                                <option value="false">Không</option>
+                                <option value="true">Có</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Ghi Chú</label>
+                        <textarea id="patientNotes" rows="3" placeholder="Ghi chú thêm về bệnh nhân..."></textarea>
+                    </div>
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-primary">💾 Lưu</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('addPatientModal')">❌ Hủy</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = (function () {
+            if (window.location.protocol.startsWith('http')) {
+                return `${window.location.protocol}//${window.location.host}/api`;
+            }
+            return 'http://localhost:5000/api';
+        })();
+        let currentUser = null;
+        let patientsData = [];
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function () {
+            checkAuthStatus();
+            animateLoadingNumbers();
+            loadDashboard();
+        });
+
+        // Loading animation for numbers
+        function animateLoadingNumbers() {
+            const loadingElements = document.querySelectorAll('.loading');
+            loadingElements.forEach(element => {
+                if (!element.dataset.originalText) {
+                    element.dataset.originalText = element.textContent;
+                }
+                element.dataset.currentNumber = element.dataset.currentNumber || '0';
+                // Clear any existing target and set a new random target number for each page reload
+                delete element.dataset.targetNumber;
+                element.dataset.targetNumber = Math.floor(Math.random() * 900) + 100; // Random number between 100-999
+
+                element.dataset.animationId = setInterval(() => {
+                    let current = parseInt(element.dataset.currentNumber);
+                    let target = parseInt(element.dataset.targetNumber);
+                    let step = Math.ceil((target - current) / 10);
+
+                    if (current >= target) {
+                        // Stop animation when target is reached
+                        element.textContent = target.toLocaleString();
+                        clearInterval(element.dataset.animationId);
+                        return;
+                    }
+
+                    current += step;
+                    element.dataset.currentNumber = current;
+                    element.textContent = current.toLocaleString();
+                }, 100);
+            });
+        }
+
+        function stopLoadingAnimation() {
+            const loadingElements = document.querySelectorAll('.loading');
+            loadingElements.forEach(element => {
+                if (element.dataset.animationId) {
+                    clearInterval(element.dataset.animationId);
+                    element.textContent = element.dataset.originalText || '0';
+                }
+            });
+        }
+
+        // Authentication functions
+        function checkAuthStatus() {
+            try {
+                const savedUser = localStorage.getItem('currentUser');
+                if (savedUser) {
+                    currentUser = JSON.parse(savedUser);
+                    if (currentUser.role === 'Staff' || currentUser.roles?.includes('Staff')) {
+                        showUserInfo(currentUser);
+                    } else {
+                        // Redirect non-staff users
+                        alert('Bạn không có quyền truy cập trang này! Chỉ dành cho nhân viên.');
+                        window.location.href = 'index.htm';
+                    }
+                } else {
+                    showLoginButton();
+                }
+            } catch (error) {
+                console.error('Error parsing user data:', error);
+                localStorage.removeItem('currentUser');
+                showLoginButton();
+            }
+        }
+
+        function showUserInfo(user) {
+            document.getElementById('login-btn').style.display = 'none';
+            document.getElementById('user-info').style.display = 'block';
+            document.getElementById('user-name').textContent = `👨‍💼 ${user.fullName} (Nhân viên)`;
+
+            // Setup logout button
+            document.getElementById('logout-btn').addEventListener('click', function() {
+                localStorage.removeItem('currentUser');
+                window.location.href = 'index.htm';
+            });
+        }
+
+        function showLoginButton() {
+            document.getElementById('login-btn').style.display = 'inline-block';
+            document.getElementById('user-info').style.display = 'none';
+        }
+
+        // Helper: Fake demo data when backend is missing
+        function generateFakeBloodInventory(count = 8) {
+            const types = ['O-', 'O+', 'A-', 'A+', 'B-', 'B+', 'AB-', 'AB+'];
+            return types.slice(0, count).map(type => {
+                const total = Math.floor(Math.random() * 30) + 10;
+                const available = Math.floor(total * (0.6 + Math.random() * 0.3));
+                const reserved = Math.max(0, total - available - Math.floor(Math.random() * 5));
+                return {
+                    id: Math.floor(Math.random() * 1000),
+                    bloodType: { name: type },
+                    totalUnits: total,
+                    availableUnits: available,
+                    reservedUnits: reserved,
+                    totalVolume: Math.round(total * 450),
+                    lowStockThreshold: 200 + Math.floor(Math.random() * 200)
+                };
+            });
+        }
+
+        function generateFakePatients(count = 10) {
+            const names = ['Nguyễn Văn A', 'Trần Thị B', 'Phạm Văn C', 'Lê Thị D', 'Hoàng Minh E', 'Võ Thị F', 'Đặng Văn G', 'Bùi Thị H', 'Phan Thị I', 'Lâm Văn J'];
+            const bloodTypes = ['O-', 'O+', 'A-', 'A+', 'B-', 'B+', 'AB-', 'AB+'];
+            return Array.from({ length: count }).map((_, i) => {
+                const dob = new Date();
+                dob.setFullYear(dob.getFullYear() - (20 + Math.floor(Math.random() * 40)));
+                return {
+                    id: Math.floor(Math.random() * 10000),
+                    name: names[i % names.length],
+                    bloodType: bloodTypes[Math.floor(Math.random() * bloodTypes.length)],
+                    dateOfBirth: dob.toISOString(),
+                    underTreatment: Math.random() < 0.4
+                };
+            });
+        }
+
+        function getLocalPatientCache() {
+            try {
+                return JSON.parse(localStorage.getItem('localPatients') || '[]');
+            } catch {
+                return [];
+            }
+        }
+
+        function mergePatients(remote, local) {
+            const byEmail = new Map();
+            (remote || []).forEach(p => {
+                if (p?.email) byEmail.set(p.email, p);
+            });
+            (local || []).forEach(p => {
+                if (p?.email) {
+                    if (!byEmail.has(p.email)) {
+                        byEmail.set(p.email, p);
+                    }
+                }
+            });
+            return Array.from(byEmail.values());
+        }
+
+        // Keep patient list updated when another tab registers a patient
+        window.addEventListener('storage', (event) => {
+            if (event.key === 'localPatients' || event.key === 'localPatientsUpdatedAt') {
+                loadPatients();
+            }
+        });
+
+        // Navigation
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const section = this.dataset.section;
+
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+
+                this.classList.add('active');
+                document.getElementById(section).classList.add('active');
+
+                // Load section data
+                switch (section) {
+                    case 'blood-management':
+                        loadBloodTypes();
+                        break;
+                    case 'inventory-management':
+                        loadInventory();
+                        break;
+                    case 'patient-management':
+                        loadPatients();
+                        break;
+                    case 'pricing-management':
+                        loadPrices();
+                        updatePricingSummary();
+                        break;
+                }
+            });
+        });
+
+        // Dashboard functions
+        async function loadDashboard() {
+            try {
+                const [bloodTypesRes, inventoryRes, patientsRes] = await Promise.all([
+                    fetch(`${API_URL}/bloodtypes`),
+                    fetch(`${API_URL}/bloodinventory`),
+                    fetch(`${API_URL}/patients`)
+                ]);
+
+                const bloodTypes = await bloodTypesRes.json();
+                const inventory = await inventoryRes.json();
+                const patients = await patientsRes.json();
+
+                // Update stats
+                document.getElementById('totalBloodTypes').textContent = bloodTypes.length;
+                document.getElementById('bloodTypesStatus').innerHTML = `<span class="badge badge-success">${bloodTypes.length} loại</span>`;
+
+                const totalUnits = inventory.reduce((sum, item) => sum + item.totalUnits, 0);
+                const totalLiters = (totalUnits * 0.45).toFixed(2);
+                document.getElementById('totalInventory').textContent = totalLiters;
+                document.getElementById('inventoryStatus').innerHTML = `<span class="badge badge-success">${totalLiters} lít</span>`;
+
+                document.getElementById('totalPatients').textContent = patients.length;
+                document.getElementById('patientsStatus').innerHTML = `<span class="badge badge-success">${patients.length} người</span>`;
+
+                let totalValue = 0;
+                inventory.forEach(item => {
+                    const price = 150000; // Default price in VND
+                    totalValue += price * item.totalUnits;
+                });
+                const totalValueUSD = (totalValue / 23000).toFixed(2);
+                document.getElementById('totalValue').textContent = totalValueUSD;
+                document.getElementById('valueStatus').innerHTML = `<span class="badge badge-success">$${totalValueUSD}</span>`;
+
+                // Mock alerts and activity
+                const alerts = inventory.filter(item => item.availableUnits <= item.lowStockThreshold).length;
+                document.getElementById('alertsCount').textContent = alerts;
+                document.getElementById('alertsStatus').innerHTML = `<span class="badge badge-${alerts > 0 ? 'danger' : 'success'}">${alerts} cảnh báo</span>`;
+
+                document.getElementById('todayActivity').textContent = Math.floor(Math.random() * 20) + 5;
+                document.getElementById('activityStatus').innerHTML = '<span class="badge badge-success">hoạt động</span>';
+
+                stopLoadingAnimation();
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+
+                // Fallback to demo data
+                const inventory = generateFakeBloodInventory();
+                const patients = generateFakePatients();
+                const bloodTypes = [{ id: 1, name: 'O-', description: 'Nhóm máu phổ biến' }, { id: 2, name: 'A+', description: 'Nhóm máu phổ biến' }];
+
+                document.getElementById('totalBloodTypes').textContent = bloodTypes.length;
+                document.getElementById('bloodTypesStatus').innerHTML = `<span class="badge badge-success">${bloodTypes.length} loại</span>`;
+
+                const totalUnits = inventory.reduce((sum, item) => sum + item.totalUnits, 0);
+                const totalLiters = (totalUnits * 0.45).toFixed(2);
+                document.getElementById('totalInventory').textContent = totalLiters;
+                document.getElementById('inventoryStatus').innerHTML = `<span class="badge badge-success">${totalLiters} lít</span>`;
+
+                document.getElementById('totalPatients').textContent = patients.length;
+                document.getElementById('patientsStatus').innerHTML = `<span class="badge badge-success">${patients.length} người</span>`;
+
+                let totalValue = 0;
+                inventory.forEach(item => {
+                    const price = 150000; // Default price in VND
+                    totalValue += price * item.totalUnits;
+                });
+                const totalValueUSD = (totalValue / 23000).toFixed(2);
+                document.getElementById('totalValue').textContent = totalValueUSD;
+                document.getElementById('valueStatus').innerHTML = `<span class="badge badge-success">$${totalValueUSD}</span>`;
+
+                const alerts = inventory.filter(item => item.availableUnits <= item.lowStockThreshold).length;
+                document.getElementById('alertsCount').textContent = alerts;
+                document.getElementById('alertsStatus').innerHTML = `<span class="badge badge-${alerts > 0 ? 'danger' : 'success'}">${alerts} cảnh báo</span>`;
+
+                document.getElementById('todayActivity').textContent = Math.floor(Math.random() * 20) + 5;
+                document.getElementById('activityStatus').innerHTML = '<span class="badge badge-success">hoạt động</span>';
+
+                stopLoadingAnimation();
+            }
+        }
+
+        // Blood Type Management"
+        async function loadBloodTypes() {
+            try {
+                const response = await fetch(`${API_URL}/bloodtypes`);
+                const data = await response.json();
+
+                let html = '';
+                if (data.length === 0) {
+                    html = '<div class="no-data">Chưa có nhóm máu nào</div>';
+                } else {
+                    html = `
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Tên Nhóm Máu</th>
+                                    <th>Mô Tả</th>
+                                    <th>Thao Tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+                    data.forEach(type => {
+                        html += `
+                            <tr>
+                                <td>${type.id}</td>
+                                <td><strong>${type.name}</strong></td>
+                                <td>${type.description || 'N/A'}</td>
+                                <td>
+                                    <button class="btn btn-warning btn-sm" onclick="editBloodType(${type.id})">✏️ Sửa</button>
+                                    <button class="btn btn-danger btn-sm" onclick="deleteBloodType(${type.id})">🗑️ Xóa</button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                    html += '</tbody></table>';
+                }
+                document.getElementById('bloodTypesTable').innerHTML = html;
+            } catch (error) {
+                console.error('Error loading blood types:', error);
+            }
+        }
+
+        function openAddBloodTypeModal() {
+            document.getElementById('addBloodTypeModal').style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Inventory Management
+        async function loadInventory() {
+            try {
+                const response = await fetch(`${API_URL}/bloodinventory`);
+                const data = await response.json();
+                const inventory = (data && data.length) ? data : generateFakeBloodInventory();
+
+                let html = '';
+                if (inventory.length === 0) {
+                    html = '<div class="no-data">Kho máu trống</div>';
+                } else {
+                    html = `
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nhóm Máu</th>
+                                    <th>Tổng Đơn Vị</th>
+                                    <th>Có Sẵn</th>
+                                    <th>Thể Tích (Lít)</th>
+                                    <th>Trạng Thái</th>
+                                    <th>Thao Tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                    `;
+                    inventory.forEach(item => {
+                        const status = item.availableUnits <= item.lowStockThreshold ?
+                            '<span class="badge badge-danger">⚠️ Cần nhập</span>' :
+                            '<span class="badge badge-success">✅ Bình thường</span>';
+                        const volumeLiters = (item.totalVolume / 1000).toFixed(2);
+
+                        html += `
+                            <tr>
+                                <td>${item.id}</td>
+                                <td><strong>${item.bloodType?.name || 'N/A'}</strong></td>
+                                <td>${item.totalUnits}</td>
+                                <td>${item.availableUnits}</td>
+                                <td>${volumeLiters}</td>
+                                <td>${status}</td>
+                                <td>
+                                    <button class="btn btn-warning btn-sm" onclick="editInventory(${item.id})">✏️ Sửa</button>
+                                    <button class="btn btn-danger btn-sm" onclick="deleteInventory(${item.id})">🗑️ Xóa</button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                    html += '</tbody></table>';
+                }
+                document.getElementById('inventoryTable').innerHTML = html;
+            } catch (error) {
+                console.error('Error loading inventory:', error);
+                const demo = generateFakeBloodInventory();
+                loadInventoryFromDemo(demo);
+            }
+        }
+
+        function loadInventoryFromDemo(inventory) {
+            let html = '';
+            if (inventory.length === 0) {
+                html = '<div class="no-data">Kho máu trống</div>';
+            } else {
+                html = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nhóm Máu</th>
+                                <th>Tổng Đơn Vị</th>
+                                <th>Có Sẵn</th>
+                                <th>Thể Tích (Lít)</th>
+                                <th>Trạng Thái</th>
+                                <th>Thao Tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                inventory.forEach(item => {
+                    const status = item.availableUnits <= item.lowStockThreshold ?
+                        '<span class="badge badge-danger">⚠️ Cần nhập</span>' :
+                        '<span class="badge badge-success">✅ Bình thường</span>';
+                    const volumeLiters = (item.totalVolume / 1000).toFixed(2);
+
+                    html += `
+                        <tr>
+                            <td>${item.id}</td>
+                            <td><strong>${item.bloodType?.name || 'N/A'}</strong></td>
+                            <td>${item.totalUnits}</td>
+                            <td>${item.availableUnits}</td>
+                            <td>${volumeLiters}</td>
+                            <td>${status}</td>
+                            <td>
+                                <button class="btn btn-warning btn-sm" onclick="editInventory(${item.id})">✏️ Sửa</button>
+                                <button class="btn btn-danger btn-sm" onclick="deleteInventory(${item.id})">🗑️ Xóa</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                html += '</tbody></table>';
+            }
+            document.getElementById('inventoryTable').innerHTML = html;
+        }
+
+        function openAddInventoryModal() {
+            // Load blood types for dropdown
+            fetch(`${API_URL}/bloodtypes`)
+                .then(res => res.json())
+                .then(data => {
+                    const select = document.getElementById('inventoryBloodType');
+                    select.innerHTML = '<option value="">-- Chọn Nhóm Máu --</option>';
+                    data.forEach(type => {
+                        select.innerHTML += `<option value="${type.id}">${type.name}</option>`;
+                    });
+                });
+
+            document.getElementById('addInventoryModal').style.display = 'block';
+        }
+
+        // Patient Management
+        async function loadPatients() {
+            try {
+                const response = await fetch(`${API_URL}/patients`);
+                const data = await response.json();
+
+                const localPatients = getLocalPatientCache();
+                const merged = mergePatients(data, localPatients);
+
+                patientsData = (merged && merged.length) ? merged : generateFakePatients();
+
+                // Clear cache when backend is available
+                if (data && data.length) {
+                    localStorage.removeItem('localPatients');
+                }
+
+                renderPatientTable(patientsData);
+            } catch (error) {
+                console.error('Error loading patients:', error);
+                const localData = getLocalPatientCache();
+                if (localData.length > 0) {
+                    console.log('Using local storage patient data');
+                    renderPatientTable(localData);
+                } else {
+                    renderPatientTable(generateFakePatients());
+                }
+            }
+        }
+
+        function renderPatientTable(patients) {
+            let html = '';
+            if (patients.length === 0) {
+                html = '<div class="no-data">Chưa có bệnh nhân nào</div>';
+            } else {
+                html = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Tên</th>
+                                <th>Nhóm Máu</th>
+                                <th>Tuổi</th>
+                                <th>Trạng Thái</th>
+                                <th>Thao Tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                patients.forEach(patient => {
+                    const age = new Date().getFullYear() - new Date(patient.dateOfBirth).getFullYear();
+                    const status = patient.underTreatment ?
+                        '<span class="badge badge-warning">Đang điều trị</span>' :
+                        '<span class="badge badge-success">Bình thường</span>';
+
+                    html += `
+                        <tr>
+                            <td>${patient.id}</td>
+                            <td>${patient.name}</td>
+                            <td><strong>${patient.bloodType || 'N/A'}</strong></td>
+                            <td>${age}</td>
+                            <td>${status}</td>
+                            <td>
+                                <button class="btn btn-success btn-sm" onclick="openPaymentModal(${patient.id})">💳 Thanh toán</button>
+                                <button class="btn btn-warning btn-sm" onclick="editPatient(${patient.id})">✏️ Sửa</button>
+                                <button class="btn btn-danger btn-sm" onclick="deletePatient(${patient.id})">🗑️ Xóa</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                html += '</tbody></table>';
+            }
+            document.getElementById('patientsTable').innerHTML = html;
+        }
+
+        function loadPatientsFromDemo(data) {
+            patientsData = data;
+
+            let html = '';
+            if (data.length === 0) {
+                html = '<div class="no-data">Chưa có bệnh nhân nào</div>';
+            } else {
+                html = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Tên</th>
+                                <th>Nhóm Máu</th>
+                                <th>Tuổi</th>
+                                <th>Trạng Thái</th>
+                                <th>Thao Tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                data.forEach(patient => {
+                    const age = new Date().getFullYear() - new Date(patient.dateOfBirth).getFullYear();
+                    const status = patient.underTreatment ?
+                        '<span class="badge badge-warning">Đang điều trị</span>' :
+                        '<span class="badge badge-success">Bình thường</span>';
+
+                    html += `
+                        <tr>
+                            <td>${patient.id}</td>
+                            <td>${patient.name}</td>
+                            <td><strong>${patient.bloodType || 'N/A'}</strong></td>
+                            <td>${age}</td>
+                            <td>${status}</td>
+                            <td>
+                                <button class="btn btn-success btn-sm" onclick="openPaymentModal(${patient.id})">💳 Thanh toán</button>
+                                <button class="btn btn-warning btn-sm" onclick="editPatient(${patient.id})">✏️ Sửa</button>
+                                <button class="btn btn-danger btn-sm" onclick="deletePatient(${patient.id})">🗑️ Xóa</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                html += '</tbody></table>';
+            }
+            document.getElementById('patientsTable').innerHTML = html;
+        }
+
+        function openAddPatientModal() {
+            // Load blood types for dropdown
+            fetch(`${API_URL}/bloodtypes`)
+                .then(res => res.json())
+                .then(data => {
+                    const select = document.getElementById('patientBloodType');
+                    select.innerHTML = '<option value="">-- Chọn Nhóm Máu --</option>';
+                    data.forEach(type => {
+                        select.innerHTML += `<option value="${type.id}">${type.name}</option>`;
+                    });
+                });
+
+            document.getElementById('addPatientModal').style.display = 'block';
+        }
+
+        // Pricing Management (same as main page)
+        let bloodPrices = {
+            'O-': 180000, 'O+': 150000, 'A-': 160000, 'A+': 150000,
+            'B-': 160000, 'B+': 150000, 'AB-': 180000, 'AB+': 170000
+        };
+
+        function loadPrices() {
+            const saved = localStorage.getItem('bloodPrices');
+            if (saved) {
+                bloodPrices = JSON.parse(saved);
+            }
+            displayPricingCards();
+        }
+
+        function displayPricingCards() {
+            let html = '';
+            Object.entries(bloodPrices).forEach(([type, price]) => {
+                const priceUSD = (price / 23000).toFixed(2);
+                html += `
+                    <div class="pricing-card">
+                        <h4>Nhóm Máu: ${type}</h4>
+                        <div class="price-input-group">
+                            <label style="margin: 0; color: white; flex: 0 0 100px;">Giá/Lít (USD):</label>
+                            <input type="number" class="price-input" data-type="${type}" value="${priceUSD}" min="0" step="0.01" style="color: #333; width: 180px;">
+                            <span style="color: white; margin-left: 10px;">$</span>
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById('pricingCards').innerHTML = html;
+
+            document.querySelectorAll('.price-input').forEach(input => {
+                input.addEventListener('change', function () {
+                    const usdValue = parseFloat(this.value);
+                    bloodPrices[this.dataset.type] = Math.round(usdValue * 23000);
+                });
+            });
+        }
+
+        function savePrices() {
+            localStorage.setItem('bloodPrices', JSON.stringify(bloodPrices));
+            showMessage('pricingMessage', '✓ Giá cả đã được lưu thành công!', 'success');
+            updatePricingSummary();
+        }
+
+        async function updatePricingSummary() {
+            try {
+                const response = await fetch(`${API_URL}/bloodinventory`);
+                const data = await response.json();
+
+                let html = '';
+                let totalValue = 0;
+
+                data.forEach(item => {
+                    const type = item.bloodType?.name || 'Unknown';
+                    const priceVND = bloodPrices[type] || 150000;
+                    const priceUSD = (priceVND / 23000).toFixed(2);
+                    const quantity = item.totalUnits || 0;
+                    const quantityLiters = (quantity * 0.45).toFixed(2);
+                    const valueVND = priceVND * quantity;
+                    const valueUSD = (valueVND / 23000).toFixed(2);
+                    totalValue += valueVND;
+
+                    html += `
+                        <tr>
+                            <td><strong>${type}</strong></td>
+                            <td>$${priceUSD}</td>
+                            <td>${quantityLiters} lít</td>
+                            <td>$${valueUSD}</td>
+                        </tr>
+                    `;
+                });
+
+                const totalValueUSD = (totalValue / 23000).toFixed(2);
+                html += `
+                    <tr style="border-top: 2px solid #667eea; font-weight: bold; background: #f0f0f0;">
+                        <td colspan="3">TỔNG GIÁ TRỊ KHO (USD)</td>
+                        <td>$${totalValueUSD}</td>
+                    </tr>
+                `;
+
+                document.getElementById('pricingSummary').innerHTML = html;
+            } catch (error) {
+                console.error('Error updating pricing summary:', error);
+            }
+        }
+
+        // Reports functions
+        function generateInventoryReport() {
+            // Implementation for inventory report
+            showMessage('reportsMessage', '📊 Báo cáo kho máu đang được tạo...', 'success');
+        }
+
+        function generatePatientReport() {
+            // Implementation for patient report
+            showMessage('reportsMessage', '👥 Báo cáo bệnh nhân đang được tạo...', 'success');
+        }
+
+        function generateFinancialReport() {
+            // Implementation for financial report
+            showMessage('reportsMessage', '💰 Báo cáo tài chính đang được tạo...', 'success');
+        }
+
+        // Utility functions
+        function showMessage(elementId, message, type) {
+            const elem = document.getElementById(elementId);
+            elem.textContent = message;
+            elem.className = `message ${type}`;
+            setTimeout(() => {
+                elem.className = 'message';
+            }, 5000);
+        }
+
+        // Contact form helpers
+        function saveContactMessage(message) {
+            const stored = JSON.parse(localStorage.getItem('contactMessages') || '[]');
+            stored.push(message);
+            localStorage.setItem('contactMessages', JSON.stringify(stored));
+        }
+
+        async function submitContactForm() {
+            const name = document.getElementById('contactName').value.trim();
+            const email = document.getElementById('contactEmail').value.trim();
+            const messageText = document.getElementById('contactMessageInput').value.trim();
+
+            if (!name || !email || !messageText) {
+                showMessage('contactMessage', '✗ Vui lòng điền đầy đủ thông tin.', 'error');
+                return;
+            }
+
+            const payload = {
+                name,
+                email,
+                message: messageText,
+                sendTo: 'dinh6601@gmail.com'
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/contact`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(errorText || 'Lỗi khi gửi email');
+                }
+
+                showMessage('contactMessage', '✓ Tin nhắn đã được gửi tự động!', 'success');
+                saveContactMessage({
+                    id: Date.now(),
+                    name,
+                    email,
+                    message: messageText,
+                    date: new Date().toISOString()
+                });
+                document.getElementById('contactForm').reset();
+            } catch (error) {
+                console.error('Contact send error:', error);
+                showMessage('contactMessage', '✗ Không thể gửi tin nhắn. Vui lòng thử lại.', 'error');
+            }
+        }
+
+        // Payment functions
+        function getStoredPayments() {
+            try {
+                return JSON.parse(localStorage.getItem('patientPayments') || '[]');
+            } catch {
+                return [];
+            }
+        }
+
+        function savePaymentRecord(record) {
+            const payments = getStoredPayments();
+            payments.push(record);
+            localStorage.setItem('patientPayments', JSON.stringify(payments));
+        }
+
+        function openPaymentModal(patientId) {
+            const patient = patientsData.find(p => p.id === patientId);
+            if (!patient) {
+                alert('Không tìm thấy bệnh nhân. Vui lòng tải lại trang.');
+                return;
+            }
+
+            document.getElementById('paymentPatientName').value = patient.name;
+            document.getElementById('paymentAmount').value = '';
+            document.getElementById('paymentMethod').value = 'Tiền mặt';
+            document.getElementById('paymentNotes').value = '';
+            document.getElementById('paymentMessage').textContent = '';
+
+            document.getElementById('patientPaymentModal').style.display = 'block';
+            document.getElementById('paymentForm').onsubmit = function (e) {
+                e.preventDefault();
+                submitPayment(patientId);
+            };
+        }
+
+        function submitPayment(patientId) {
+            const amount = parseFloat(document.getElementById('paymentAmount').value);
+            const method = document.getElementById('paymentMethod').value;
+            const notes = document.getElementById('paymentNotes').value;
+            const patient = patientsData.find(p => p.id === patientId);
+
+            if (!patient) {
+                showMessage('paymentMessage', 'Không tìm thấy bệnh nhân.', 'error');
+                return;
+            }
+
+            if (isNaN(amount) || amount <= 0) {
+                showMessage('paymentMessage', 'Vui lòng nhập số tiền hợp lệ.', 'error');
+                return;
+            }
+
+            const record = {
+                id: Date.now(),
+                patientId,
+                patientName: patient.name,
+                amount,
+                method,
+                notes,
+                date: new Date().toISOString()
+            };
+
+            savePaymentRecord(record);
+            showMessage('paymentMessage', `✓ Thanh toán ${amount.toLocaleString()} VND thành công.`, 'success');
+
+            setTimeout(() => {
+                closeModal('patientPaymentModal');
+                openPaymentHistoryModal(patientId);
+            }, 800);
+        }
+
+        function openPaymentHistoryModal(patientId) {
+            const patient = patientsData.find(p => p.id === patientId);
+            const payments = getStoredPayments().filter(p => p.patientId === patientId);
+
+            let html = '';
+            if (!payments.length) {
+                html = '<div class="no-data">Chưa có lịch sử thanh toán cho bệnh nhân này.</div>';
+            } else {
+                html = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Ngày</th>
+                                <th>Số Tiền</th>
+                                <th>Phương Thức</th>
+                                <th>Ghi Chú</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                payments.sort((a,b) => new Date(b.date) - new Date(a.date));
+                payments.forEach(p => {
+                    html += `
+                        <tr>
+                            <td>${new Date(p.date).toLocaleString('vi-VN')}</td>
+                            <td>₫${p.amount.toLocaleString('vi-VN')}</td>
+                            <td>${p.method}</td>
+                            <td>${p.notes || '-'}</td>
+                        </tr>
+                    `;
+                });
+                html += '</tbody></table>';
+            }
+
+            document.getElementById('paymentHistoryContent').innerHTML = `
+                <p><strong>Bệnh nhân:</strong> ${patient?.name || 'Không xác định'}</p>
+                ${html}
+            `;
+            document.getElementById('paymentHistoryModal').style.display = 'block';
+        }
+
+        // Placeholder functions for edit/delete operations
+        function editBloodType(id) {
+            alert(`Chức năng chỉnh sửa nhóm máu ${id} đang được phát triển`);
+        }
+
+        function deleteBloodType(id) {
+            if (confirm('Bạn có chắc muốn xóa nhóm máu này?')) {
+                alert(`Chức năng xóa nhóm máu ${id} đang được phát triển`);
+            }
+        }
+
+        function editInventory(id) {
+            alert(`Chức năng chỉnh sửa kho ${id} đang được phát triển`);
+        }
+
+        function deleteInventory(id) {
+            if (confirm('Bạn có chắc muốn xóa mục kho này?')) {
+                alert(`Chức năng xóa kho ${id} đang được phát triển`);
+            }
+        }
+
+        function editPatient(id) {
+            alert(`Chức năng chỉnh sửa bệnh nhân ${id} đang được phát triển`);
+        }
+
+        function deletePatient(id) {
+            if (confirm('Bạn có chắc muốn xóa bệnh nhân này?')) {
+                alert(`Chức năng xóa bệnh nhân ${id} đang được phát triển`);
+            }
+        }
+
+        function openUpdateInventoryModal() {
+            alert('Chức năng cập nhật kho đang được phát triển');
+        }
+
+        function openUpdatePatientModal() {
+            alert('Chức năng cập nhật bệnh nhân đang được phát triển');
+        }
+    </script>
+</body>
+
+</html>
